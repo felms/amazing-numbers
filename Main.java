@@ -5,21 +5,34 @@ class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to Amazing Numbers!\n\n" +
-                "Supported requests:\n" +
-                "- enter a natural number to know its properties;\n" +
-                "- enter 0 to exit.");
+        System.out.println("Welcome to Amazing Numbers!");
+        printInstructions();
 
         long request = -1;
+        int listLength = 0;
+        String[] req;
         do {
-            System.out.println("\n\nEnter a request:");
-            request = scanner.nextLong();
+            System.out.print("\n\nEnter a request: ");
+            req = scanner.nextLine().split(" ");
+            if ( req.length == 0 || req[0].equals("")) {
+                printInstructions();
+            } else {
 
-            if (!isNatural(request)) {
-                System.out.println("The first parameter should be a natural number or zero.");
+                if (!isNatural(req[0])) {
+                    System.out.println("The first parameter should be a natural number or zero.");
+                    continue;
+                }
 
-            } else if (request > 0) {
-                checkProperties(request);
+                if (req.length > 1 && !isNatural(req[1])) {
+                    System.out.println("The second parameter should be a natural number.");
+                    continue;
+                }
+
+                request = Long.parseLong(req[0]);
+                if (request > 0) {
+                    listLength = req.length > 1 ? Integer.parseInt(req[1]) : listLength;
+                    checkProperties(request, listLength);
+                }
             }
 
         } while (request != 0);
@@ -27,51 +40,41 @@ class Main {
         scanner.close();
     }
 
-    public static boolean isNatural(long number) {
+    public static boolean isNatural(String number) {
 
-        return number >= 0;
+        boolean natural = true;
+        try {
+            long l = Long.parseLong(number);
+            natural = l >= 0;
+        } catch (NumberFormatException efe) {
+            natural = false;
+        }
+
+        return natural;
     }
 
-    public static void checkProperties(long number) {
-        boolean even = number % 2 == 0;
+    public static void checkProperties(long number, int listLength) {
 
-        System.out.printf("Properties of %d\n" +
-                        "\teven: %s\n" +
-                        "\todd: %s\n" +
-                        "\tbuzz: %s\n" +
-                        "\tduck: %s\n" +
-                        "\tpalindromic: %s\n",
-                        number, even, !even, isBuzzNumber(number), isDuckNumber(number), isPalindrome(number));
-    }
+        if(listLength == 0) {
+            System.out.printf(new ANumber(number).properties());
 
-    public static boolean isBuzzNumber(long number) {
-
-        return (number % 10) == 7 || (number % 7) == 0;
-
-    }
-
-    public static boolean isDuckNumber(long number) {
-
-        while (number > 0) {
-            if(number % 10 == 0) {
-                return true;
+        } else {
+            System.out.println("\n");
+            for (long i = number; i < number + listLength; i++) {
+                ANumber a = new ANumber(i);
+                System.out.printf("\t%s\n", a);
             }
-            number /= 10;
         }
-
-        return false;
     }
 
-    public static boolean isPalindrome(long number) {
-        long n = number;
-        long reverse = 0;
+    public static void printInstructions() {
+        System.out.println("\n\nSupported requests:\n" +
+                "- enter a natural number to know its properties;\n" +
+                "- enter two natural numbers to obtain the properties of the list:\n" +
+                "  * the first parameter represents a starting number;\n" +
+                "  * the second parameter shows how many consecutive numbers are to be processed;\n" +
+                "- separate the parameters with one space;\n" +
+                "- enter 0 to exit.");
 
-        while (n > 0) {
-            long lastDigit = n % 10;
-            reverse = reverse * 10 + lastDigit;
-            n /= 10;
-        }
-
-        return number == reverse;
     }
 }
