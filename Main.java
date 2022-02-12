@@ -28,6 +28,14 @@ class Main {
                     continue;
                 }
 
+                if (req.length > 2 && !ANumber.isAvailableProperty(req[2])) {
+                    String s = String.format("\n\nThe property [%s] is wrong.", req[2].toUpperCase());
+                    s += String.format("\nAvailable properties: %s",
+                            ANumber.listAvailableProperties());
+                    System.out.println(s);
+                    continue;
+                }
+
                 request = Long.parseLong(req[0]);
                 if (request > 0) {
                     listLength = req.length > 1 ? Integer.parseInt(req[1]) : listLength;
@@ -56,7 +64,7 @@ class Main {
     public static void checkProperties(long number, int listLength) {
 
         if(listLength == 0) {
-            System.out.printf(new ANumber(number).properties());
+            System.out.printf(new ANumber(number).listProperties());
 
         } else {
             System.out.println("\n");
@@ -72,7 +80,8 @@ class Main {
                 "- enter a natural number to know its properties;\n" +
                 "- enter two natural numbers to obtain the properties of the list:\n" +
                 "  * the first parameter represents a starting number;\n" +
-                "  * the second parameter shows how many consecutive numbers are to be processed;\n" +
+                "  * the second parameters show how many consecutive numbers are to be processed;\n" +
+                "- two natural numbers and a property to search for;\n" +
                 "- separate the parameters with one space;\n" +
                 "- enter 0 to exit.");
 

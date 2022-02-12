@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class ANumber {
 
     private long number;
@@ -6,6 +8,10 @@ public class ANumber {
     private boolean palindromic;
     private boolean gapful;
     private boolean even;
+
+    public enum AvailableProperties {
+        BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD
+    }
 
     public ANumber(long number) {
         this.number = number;
@@ -82,7 +88,23 @@ public class ANumber {
         return number % div == 0;
     }
 
-    public String properties() {
+    public static boolean isAvailableProperty(String propertyName) {
+
+        propertyName = propertyName.toUpperCase();
+        for (AvailableProperties p : AvailableProperties.values()) {
+            if (p.name().equals(propertyName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static String listAvailableProperties() {
+        return Arrays.asList(AvailableProperties.values()).toString();
+    }
+
+    public String listProperties() {
         return String.format("\nProperties of %d\n" +
                         "\tbuzz: %s\n" +
                         "\tduck: %s\n" +
