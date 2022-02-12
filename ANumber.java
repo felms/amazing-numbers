@@ -25,7 +25,8 @@ public class ANumber {
         this.spy = ANumber.isSpy(this.number);
         this.even = this.number % 2 == 0;
     }
-    public static boolean isBuzzNumber(long number) {
+
+    private static boolean isBuzzNumber(long number) {
 
         // Buzz numbers are numbers that are either
         // divisible by 7 or end with 7.
@@ -34,7 +35,7 @@ public class ANumber {
 
     }
 
-    public static boolean isDuckNumber(long number) {
+    private static boolean isDuckNumber(long number) {
 
         // A Duck number is a positive number that contains zeroes.
         // For example, 3210, 8050896, 70709 are Duck numbers.
@@ -50,7 +51,7 @@ public class ANumber {
         return false;
     }
 
-    public static boolean isPalindrome(long number) {
+    private static boolean isPalindrome(long number) {
 
         // A Palindromic number is symmetrical;
         // in other words, it stays the same regardless
@@ -68,7 +69,7 @@ public class ANumber {
         return number == reverse;
     }
 
-    public static boolean isGapful(long number) {
+    private static boolean isGapful(long number) {
 
         // Gapful number is a number that contains at least 3 digits
         // and is divisible by the concatenation of its first and last digit
@@ -92,9 +93,9 @@ public class ANumber {
         return number % div == 0;
     }
 
-    public static boolean isSpy(long number) {
+    private static boolean isSpy(long number) {
 
-        // A number is said to be Spy if the sum of all digits 
+        // A number is said to be Spy if the sum of all digits
         // is equal to the product of all digits.
 
         long sum = 0;
@@ -127,6 +128,30 @@ public class ANumber {
         return false;
     }
 
+    public boolean hasProperty(String property) {
+
+        AvailableProperties aProperty = AvailableProperties.valueOf(property.toUpperCase());
+
+        switch(aProperty) {
+            case BUZZ:
+                return this.buzz;
+            case DUCK:
+                return this.duck;
+            case PALINDROMIC:
+                return this.palindromic;
+            case GAPFUL:
+                return this.gapful;
+            case SPY:
+                return this.spy;
+            case EVEN:
+                return number % 2 == 0;
+            case ODD:
+                return number % 2 != 0;
+        }
+
+        return false;
+    }
+
     public static String listAvailableProperties() {
         return Arrays.asList(AvailableProperties.values()).toString();
     }
@@ -141,11 +166,11 @@ public class ANumber {
                         "\teven: %s\n" +
                         "\todd: %s\n",
                 number,
-                ANumber.isBuzzNumber(number),
-                ANumber.isDuckNumber(number),
-                ANumber.isPalindrome(number),
-                ANumber.isGapful(number),
-                ANumber.isSpy(number),
+                this.buzz,
+                this.duck,
+                this.palindromic,
+                this.gapful,
+                this.spy,
                 even, !even);
     }
 

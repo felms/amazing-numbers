@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Main {
@@ -37,13 +39,23 @@ class Main {
                 }
 
                 request = Long.parseLong(req[0]);
+
                 if (request > 0) {
-                    listLength = req.length > 1 ? Integer.parseInt(req[1]) : listLength;
-                    checkProperties(request, listLength);
+
+                    if (req.length == 3) {
+                        listLength = Integer.parseInt(req[1]);
+                        searchProperty(request, listLength, req[2]);
+                    } else {
+                        listLength = req.length == 2 ? Integer.parseInt(req[1]) : listLength;
+                        checkProperties(request, listLength);
+                    }
+
                 }
             }
 
         } while (request != 0);
+
+        System.out.println("\nGoodbye!");
 
         scanner.close();
     }
@@ -72,6 +84,26 @@ class Main {
                 ANumber a = new ANumber(i);
                 System.out.printf("\t%s\n", a);
             }
+        }
+    }
+
+    public static void searchProperty(long number, int listLength, String property) {
+        List<ANumber> found = new ArrayList<>();
+
+        int count = 0;
+        ANumber aNumber;
+        while (count < listLength) {
+            aNumber = new ANumber(number);
+            if (aNumber.hasProperty(property)) {
+                found.add(aNumber);
+                count++;
+            }
+            number++;
+        }
+
+        System.out.println("\n");
+        for (ANumber a : found) {
+            System.out.printf("\t%s\n", a);
         }
     }
 
