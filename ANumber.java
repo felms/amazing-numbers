@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ANumber {
 
@@ -7,6 +9,7 @@ public class ANumber {
     private boolean duck;
     private boolean palindromic;
     private boolean gapful;
+    private boolean spy;
     private boolean even;
 
     public enum AvailableProperties {
@@ -19,6 +22,7 @@ public class ANumber {
         this.duck = ANumber.isDuckNumber(this.number);
         this.palindromic = ANumber.isPalindrome(this.number);
         this.gapful = ANumber.isGapful(this.number);
+        this.spy = ANumber.isSpy(this.number);
         this.even = this.number % 2 == 0;
     }
     public static boolean isBuzzNumber(long number) {
@@ -88,6 +92,29 @@ public class ANumber {
         return number % div == 0;
     }
 
+    public static boolean isSpy(long number) {
+
+        // A number is said to be Spy if the sum of all digits 
+        // is equal to the product of all digits.
+
+        long sum = 0;
+        long product = 1;
+        long n = number;
+        List<Integer> digits = new ArrayList<>();
+
+        while (n > 0) {
+            digits.add((int)n % 10);
+            n /= 10;
+        }
+
+        for (int d : digits) {
+            sum += d;
+            product *= d;
+        }
+
+        return sum == product;
+    }
+
     public static boolean isAvailableProperty(String propertyName) {
 
         propertyName = propertyName.toUpperCase();
@@ -110,6 +137,7 @@ public class ANumber {
                         "\tduck: %s\n" +
                         "\tpalindromic: %s\n" +
                         "\tgapful: %s\n" +
+                        "\tspy: %s\n" +
                         "\teven: %s\n" +
                         "\todd: %s\n",
                 number,
@@ -117,6 +145,7 @@ public class ANumber {
                 ANumber.isDuckNumber(number),
                 ANumber.isPalindrome(number),
                 ANumber.isGapful(number),
+                ANumber.isSpy(number),
                 even, !even);
     }
 
@@ -150,6 +179,14 @@ public class ANumber {
                 s += ", ";
             }
             s += "gapful";
+            firstProperty = false;
+        }
+
+        if (spy) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "spy";
             firstProperty = false;
         }
 
