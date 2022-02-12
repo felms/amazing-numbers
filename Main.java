@@ -109,11 +109,12 @@ class Main {
 
     public static void printInstructions() {
         System.out.println("\n\nSupported requests:\n" +
-                "- enter a natural number to know its properties;\n" +
+                "- enter a natural number to know its properties; \n" +
                 "- enter two natural numbers to obtain the properties of the list:\n" +
                 "  * the first parameter represents a starting number;\n" +
-                "  * the second parameters show how many consecutive numbers are to be processed;\n" +
+                "  * the second parameter shows how many consecutive numbers are to be printed;\n" +
                 "- two natural numbers and a property to search for;\n" +
+                "- two natural numbers and two properties to search for;\n" +
                 "- separate the parameters with one space;\n" +
                 "- enter 0 to exit.");
 

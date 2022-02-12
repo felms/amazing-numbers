@@ -10,10 +10,12 @@ public class ANumber {
     private boolean palindromic;
     private boolean gapful;
     private boolean spy;
+    private boolean square;
+    private boolean sunny;
     private boolean even;
 
     public enum AvailableProperties {
-        BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD
+        EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY
     }
 
     public ANumber(long number) {
@@ -23,6 +25,8 @@ public class ANumber {
         this.palindromic = ANumber.isPalindrome(this.number);
         this.gapful = ANumber.isGapful(this.number);
         this.spy = ANumber.isSpy(this.number);
+        this.square = ANumber.isSquare(this.number);
+        this.sunny = ANumber.isSunny(this.number);
         this.even = this.number % 2 == 0;
     }
 
@@ -116,6 +120,29 @@ public class ANumber {
         return sum == product;
     }
 
+    private static boolean isSquare(long number) {
+
+        // A square number or a perfect square is an integer
+        // that is the square of an integer;
+        // in other words, it is the product of an integer with itself.
+        // For example, 9 is a square number,
+        // since it equals 32 and can be written as 3×3.
+
+        for (long i = 0; i * i <= number; i++) {
+            if (i * i == number) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isSunny(long number) {
+
+        // N is a sunny number if N+1 is a perfect square number.
+        return isSquare(number + 1);
+    }
+
     public static boolean isAvailableProperty(String propertyName) {
 
         propertyName = propertyName.toUpperCase();
@@ -143,6 +170,10 @@ public class ANumber {
                 return this.gapful;
             case SPY:
                 return this.spy;
+            case SQUARE:
+                return this.square;
+            case SUNNY:
+                return this.sunny;
             case EVEN:
                 return number % 2 == 0;
             case ODD:
@@ -163,6 +194,8 @@ public class ANumber {
                         "\tpalindromic: %s\n" +
                         "\tgapful: %s\n" +
                         "\tspy: %s\n" +
+                        "\tsquare: %s\n" +
+                        "\tsunny: %s\n" +
                         "\teven: %s\n" +
                         "\todd: %s\n",
                 number,
@@ -171,6 +204,8 @@ public class ANumber {
                 this.palindromic,
                 this.gapful,
                 this.spy,
+                this.square,
+                this.sunny,
                 even, !even);
     }
 
@@ -212,6 +247,22 @@ public class ANumber {
                 s += ", ";
             }
             s += "spy";
+            firstProperty = false;
+        }
+
+        if (square) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "square";
+            firstProperty = false;
+        }
+
+        if (sunny) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "sunny";
             firstProperty = false;
         }
 
