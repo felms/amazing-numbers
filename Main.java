@@ -20,21 +20,7 @@ class Main {
                 printInstructions();
             } else {
 
-                if (!isNatural(req[0])) {
-                    System.out.println("The first parameter should be a natural number or zero.");
-                    continue;
-                }
-
-                if (req.length > 1 && !isNatural(req[1])) {
-                    System.out.println("The second parameter should be a natural number.");
-                    continue;
-                }
-
-                if (req.length > 2 && !ANumber.isAvailableProperty(req[2])) {
-                    String s = String.format("\n\nThe property [%s] is wrong.", req[2].toUpperCase());
-                    s += String.format("\nAvailable properties: %s",
-                            ANumber.listAvailableProperties());
-                    System.out.println(s);
+                if (!inputOk(req)) {
                     continue;
                 }
 
@@ -42,14 +28,18 @@ class Main {
 
                 if (request > 0) {
 
-                    if (req.length == 3) {
+                    if (req.length == 4) {
                         listLength = Integer.parseInt(req[1]);
-                        searchProperty(request, listLength, req[2]);
-                    } else {
-                        listLength = req.length == 2 ? Integer.parseInt(req[1]) : listLength;
+                        searchProperties(request, listLength, req[2], req[3]);
+                    } else if (req.length == 3) {
+                        listLength = Integer.parseInt(req[1]);
+                        searchProperties(request, listLength, req[2]);
+                    } else if (req.length == 2) {
+                        listLength = Integer.parseInt(req[1]);
                         checkProperties(request, listLength);
+                    } else {
+                        checkProperties(request, 0);
                     }
-
                 }
             }
 
@@ -58,6 +48,62 @@ class Main {
         System.out.println("\nGoodbye!");
 
         scanner.close();
+    }
+
+    public static boolean inputOk(String[] request) {
+
+        if (!isNatural(request[0])) {
+            System.out.println("The first parameter should be a natural number or zero.");
+            return false;
+        }
+
+        if (request.length > 1 && !isNatural(request[1])) {
+            System.out.println("The second parameter should be a natural number.");
+            return false;
+        }
+
+        if (request.length == 3 && !ANumber.isAvailableProperty(request[2])) {
+            String s = String.format("\n\nThe property [%s] is wrong.", request[2].toUpperCase());
+            s += String.format("\nAvailable properties: %s",
+                    ANumber.listAvailableProperties());
+            System.out.println(s);
+            return false;
+        }
+
+        if (request.length == 4) {
+            if (!ANumber.isAvailableProperty(request[2]) && !ANumber.isAvailableProperty(request[3])) {
+                String s = String.format("\n\nThe properties [%s, %s] are wrong.", request[2].toUpperCase(), request[3].toUpperCase());
+                s += String.format("\nAvailable properties: %s",
+                        ANumber.listAvailableProperties());
+                System.out.println(s);
+                return false;
+            }
+
+            if (!ANumber.isAvailableProperty(request[2])) {
+                String s = String.format("\n\nThe property [%s] is wrong.", request[2].toUpperCase());
+                s += String.format("\nAvailable properties: %s",
+                        ANumber.listAvailableProperties());
+                System.out.println(s);
+                return false;
+            }
+
+            if (!ANumber.isAvailableProperty(request[3])) {
+                String s = String.format("\n\nThe property [%s] is wrong.", request[3].toUpperCase());
+                s += String.format("\nAvailable properties: %s",
+                        ANumber.listAvailableProperties());
+                System.out.println(s);
+                return false;
+            }
+
+            if (ANumber.mutuallyExclusiveProperties(request[2], request[3])) {
+                String s = String.format("\n\nThe request contains mutually exclusive properties: [%s, %s]\n" +
+                        "There are no numbers with these properties.", request[2].toUpperCase(), request[3].toUpperCase());
+                System.out.println(s);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static boolean isNatural(String number) {
@@ -87,17 +133,26 @@ class Main {
         }
     }
 
-    public static void searchProperty(long number, int listLength, String property) {
+    public static void searchProperties(long number, int listLength, String... properties) {
         List<ANumber> found = new ArrayList<>();
 
         int count = 0;
         ANumber aNumber;
         while (count < listLength) {
             aNumber = new ANumber(number);
-            if (aNumber.hasProperty(property)) {
-                found.add(aNumber);
-                count++;
+
+            if (properties.length == 2) {
+                if (aNumber.hasProperty(properties[0]) && aNumber.hasProperty(properties[1])) {
+                    found.add(aNumber);
+                    count++;
+                }
+            } else if (properties.length == 1) {
+                if (aNumber.hasProperty(properties[0])) {
+                    found.add(aNumber);
+                    count++;
+                }
             }
+
             number++;
         }
 

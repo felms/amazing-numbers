@@ -128,19 +128,41 @@ public class ANumber {
         // For example, 9 is a square number,
         // since it equals 32 and can be written as 3×3.
 
-        for (long i = 0; i * i <= number; i++) {
-            if (i * i == number) {
-                return true;
-            }
-        }
+        long x = (long) Math.sqrt(number);
 
-        return false;
+        return Math.pow(x, 2) == number;
     }
 
     private static boolean isSunny(long number) {
 
         // N is a sunny number if N+1 is a perfect square number.
         return isSquare(number + 1);
+    }
+
+    public static boolean mutuallyExclusiveProperties(String property1, String property2){
+
+        if ((property1.equalsIgnoreCase("even")
+                && property2.equalsIgnoreCase("odd")) ||
+                (property1.equalsIgnoreCase("odd")
+                        && property2.equalsIgnoreCase("even"))) {
+            return true;
+        }
+
+        if ((property1.equalsIgnoreCase("duck")
+                && property2.equalsIgnoreCase("spy")) ||
+                (property1.equalsIgnoreCase("spy")
+                        && property2.equalsIgnoreCase("duck"))) {
+            return true;
+        }
+
+        if ((property1.equalsIgnoreCase("sunny")
+                && property2.equalsIgnoreCase("square")) ||
+                (property1.equalsIgnoreCase("square")
+                        && property2.equalsIgnoreCase("sunny"))) {
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean isAvailableProperty(String propertyName) {
