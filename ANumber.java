@@ -12,10 +12,11 @@ public class ANumber {
     private boolean spy;
     private boolean square;
     private boolean sunny;
+    private boolean jumping;
     private boolean even;
 
     public enum AvailableProperties {
-        EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY
+        EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING
     }
 
     public ANumber(long number) {
@@ -27,6 +28,7 @@ public class ANumber {
         this.spy = ANumber.isSpy(this.number);
         this.square = ANumber.isSquare(this.number);
         this.sunny = ANumber.isSunny(this.number);
+        this.jumping = ANumber.isJumping(this.number);
         this.even = this.number % 2 == 0;
     }
 
@@ -139,6 +141,40 @@ public class ANumber {
         return isSquare(number + 1);
     }
 
+    private static boolean isJumping(long number) {
+
+        // A number is a Jumping number if the adjacent digits inside the number differ by 1.
+        // The difference between 9 and 0 is not considered as 1. Single-digit numbers are considered Jumping numbers.
+
+        List<Long> digits = new ArrayList<>();
+
+        // Gets digits
+        long n = number;
+        while (n > 0) {
+            Long d = n % 10;
+            digits.add(d);
+            n /= 10;
+        }
+
+        // Single-digit numbers are considered Jumping numbers.
+        if (digits.size() == 0) {
+            return true;
+        }
+
+
+        long n0 = digits.get(0);
+        for (int i = 1; i < digits.size(); i++) {
+            long diff = Math.abs(digits.get(i) - n0);
+
+            if(diff != 1L) {
+                return false;
+            }
+            n0 = digits.get(i);
+        }
+
+        return true;
+    }
+
     public static boolean mutuallyExclusiveProperties(String property1, String property2){
 
         if ((property1.equalsIgnoreCase("even")
@@ -196,6 +232,8 @@ public class ANumber {
                 return this.square;
             case SUNNY:
                 return this.sunny;
+            case JUMPING:
+                return this.jumping;
             case EVEN:
                 return number % 2 == 0;
             case ODD:
@@ -218,6 +256,7 @@ public class ANumber {
                         "\tspy: %s\n" +
                         "\tsquare: %s\n" +
                         "\tsunny: %s\n" +
+                        "\tjumping: %s\n" +
                         "\teven: %s\n" +
                         "\todd: %s\n",
                 number,
@@ -228,6 +267,7 @@ public class ANumber {
                 this.spy,
                 this.square,
                 this.sunny,
+                this.jumping,
                 even, !even);
     }
 
@@ -285,6 +325,14 @@ public class ANumber {
                 s += ", ";
             }
             s += "sunny";
+            firstProperty = false;
+        }
+
+        if (jumping) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "jumping";
             firstProperty = false;
         }
 

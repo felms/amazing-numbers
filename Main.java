@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 class Main {
@@ -28,9 +29,13 @@ class Main {
 
                 if (request > 0) {
 
-                    if (req.length == 4) {
+                    if (req.length > 3) {
+                        String[] properties = new String[req.length - 2];
+                        for (int i = 0; i < properties.length; i++) {
+                            properties[i] = req[i + 2];
+                        }
                         listLength = Integer.parseInt(req[1]);
-                        searchProperties(request, listLength, req[2], req[3]);
+                        searchProperties(request, listLength, properties);
                     } else if (req.length == 3) {
                         listLength = Integer.parseInt(req[1]);
                         searchProperties(request, listLength, req[2]);
@@ -70,34 +75,57 @@ class Main {
             return false;
         }
 
-        if (request.length == 4) {
-            if (!ANumber.isAvailableProperty(request[2]) && !ANumber.isAvailableProperty(request[3])) {
-                String s = String.format("\n\nThe properties [%s, %s] are wrong.", request[2].toUpperCase(), request[3].toUpperCase());
+        if (request.length > 3) {
+
+            int wrongProperties = 0;
+            List<String> wrongP = new ArrayList<>();
+            for (int i = 2; i < request.length; i++) {
+                if (!ANumber.isAvailableProperty(request[i])) {
+                    wrongProperties++;
+                    wrongP.add(request[i]);
+                }
+            }
+
+            if (wrongProperties == 1) {
+                String s = String.format("\n\nThe property [%s] is wrong.", wrongP.get(0).toUpperCase());
                 s += String.format("\nAvailable properties: %s",
                         ANumber.listAvailableProperties());
                 System.out.println(s);
                 return false;
             }
 
-            if (!ANumber.isAvailableProperty(request[2])) {
-                String s = String.format("\n\nThe property [%s] is wrong.", request[2].toUpperCase());
+            if (wrongProperties > 1) {
+                String r = wrongP.get(0).toUpperCase();
+                for (int i = 1; i < wrongProperties; i++) {
+                    r += ", " + wrongP.get(i).toUpperCase();
+                }
+
+                String s = String.format("\n\nThe properties [%s] are wrong.", r);
                 s += String.format("\nAvailable properties: %s",
                         ANumber.listAvailableProperties());
                 System.out.println(s);
                 return false;
+
             }
 
-            if (!ANumber.isAvailableProperty(request[3])) {
-                String s = String.format("\n\nThe property [%s] is wrong.", request[3].toUpperCase());
-                s += String.format("\nAvailable properties: %s",
-                        ANumber.listAvailableProperties());
-                System.out.println(s);
-                return false;
+            boolean mExProperties = false;
+            List<String> mxP = new ArrayList<>();
+            for (int i = 2; i < request.length; i++) {
+                String p0 = request[i];
+                for (int j = i + 1; j < request.length; j++) {
+                    String p1 = request[j];
+                    if (ANumber.mutuallyExclusiveProperties(p0, p1)) {
+                        mExProperties = true;
+                        mxP.add(p0);
+                        mxP.add(p1);
+                    }
+                }
             }
 
-            if (ANumber.mutuallyExclusiveProperties(request[2], request[3])) {
-                String s = String.format("\n\nThe request contains mutually exclusive properties: [%s, %s]\n" +
-                        "There are no numbers with these properties.", request[2].toUpperCase(), request[3].toUpperCase());
+            if (mExProperties) {
+                String r = "[" + mxP.get(0).toUpperCase() + ", " + mxP.get(1).toUpperCase() + "]";
+                String s = String.format("\n\nThe request contains mutually exclusive properties: %s\n" +
+                        "There are no numbers with these properties.", r);
                 System.out.println(s);
                 return false;
             }
@@ -141,8 +169,12 @@ class Main {
         while (count < listLength) {
             aNumber = new ANumber(number);
 
-            if (properties.length == 2) {
-                if (aNumber.hasProperty(properties[0]) && aNumber.hasProperty(properties[1])) {
+            if (properties.length > 1) {
+                boolean foundNumber = true;
+                for (int i = 0; i < properties.length; i++) {
+                    foundNumber = foundNumber && aNumber.hasProperty(properties[i]);
+                }
+                if (foundNumber) {
                     found.add(aNumber);
                     count++;
                 }
@@ -168,8 +200,7 @@ class Main {
                 "- enter two natural numbers to obtain the properties of the list:\n" +
                 "  * the first parameter represents a starting number;\n" +
                 "  * the second parameter shows how many consecutive numbers are to be printed;\n" +
-                "- two natural numbers and a property to search for;\n" +
-                "- two natural numbers and two properties to search for;\n" +
+                "- two natural numbers and properties to search for;\n" +
                 "- separate the parameters with one space;\n" +
                 "- enter 0 to exit.");
 
