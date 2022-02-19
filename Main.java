@@ -171,8 +171,9 @@ class Main {
             if (properties.length > 1) {
                 boolean foundNumber = true;
                 for (int i = 0; i < properties.length; i++) {
+                    
                     if ((properties[i].startsWith("-") && !aNumber.hasProperty(properties[i]))
-                        || (!properties[0].startsWith("-") && aNumber.hasProperty(properties[0]))) {
+                        || (!properties[i].startsWith("-") && aNumber.hasProperty(properties[i]))) {
                         foundNumber = foundNumber && true;
                     } else {
                         foundNumber = foundNumber && false;

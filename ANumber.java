@@ -13,10 +13,12 @@ public class ANumber {
     private boolean square;
     private boolean sunny;
     private boolean jumping;
+    private boolean happy;
+    private boolean sad;
     private boolean even;
 
     public enum AvailableProperties {
-        EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING
+        EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY, SAD
     }
 
     public ANumber(long number) {
@@ -29,6 +31,8 @@ public class ANumber {
         this.square = ANumber.isSquare(this.number);
         this.sunny = ANumber.isSunny(this.number);
         this.jumping = ANumber.isJumping(this.number);
+        this.happy = ANumber.isHappy(this.number);
+        this.sad = !this.happy;
         this.even = this.number % 2 == 0;
     }
 
@@ -175,15 +179,44 @@ public class ANumber {
         return true;
     }
 
+    private static boolean isHappy(long number) {
+        
+        // a happy number is a number that reaches 1 after a sequence during which the number is replaced by the sum of each digit squares. 
+        // For example, 13 is a happy number, as 1^2 + 3^2 = 10 which leads to 1^2 + 0^2 = 1. 
+        // On the other hand, 4 is not a happy number because the sequence starts with 4^2 = 16, 
+        // 1^2 + 6^2 = 37, and finally reaches 2^2 + 0^2 = 4. 
+        // A number that is not happy is called Sad (or Unhappy).
+
+        List<Long> seenNumbers = new ArrayList<>();
+
+        while (number > 1 && !seenNumbers.contains(number)) {
+            seenNumbers.add(number);
+            number = sumOfDigitSquares(number);
+        }        
+        
+        return number == 1;
+        
+    }
+
+    private static long sumOfDigitSquares(long number) {
+        
+        long sum = 0;
+        
+        while (number > 0) {
+            long l = number % 10;
+            sum += l * l;
+            number /= 10;
+        }      
+
+        return sum;
+    }
+
     public static boolean mutuallyExclusiveProperties(String property1, String property2){
 
         if (property1.equalsIgnoreCase("-" + property2)
                 || property2.equalsIgnoreCase("-" + property1)) {
             return true;
         }
-
-        /*property1 = property1.startsWith("-") ? property1.replaceFirst("-", "") : property1;
-        property2 = property2.startsWith("-") ? property2.replaceFirst("-", "") : property2;*/
 
         if ((property1.equalsIgnoreCase("even")
                 && property2.equalsIgnoreCase("odd")) ||
@@ -196,6 +229,20 @@ public class ANumber {
                 && property2.equalsIgnoreCase("-odd")) ||
                 (property1.equalsIgnoreCase("-odd")
                         && property2.equalsIgnoreCase("-even"))) {
+            return true;
+        }
+
+        if ((property1.equalsIgnoreCase("happy")
+                && property2.equalsIgnoreCase("sad")) ||
+                (property1.equalsIgnoreCase("sad")
+                        && property2.equalsIgnoreCase("happy"))) {
+            return true;
+        }
+
+        if ((property1.equalsIgnoreCase("-happy")
+                && property2.equalsIgnoreCase("-sad")) ||
+                (property1.equalsIgnoreCase("-sad")
+                        && property2.equalsIgnoreCase("-happy"))) {
             return true;
         }
 
@@ -258,6 +305,10 @@ public class ANumber {
                 return this.sunny;
             case JUMPING:
                 return this.jumping;
+            case HAPPY:
+                return this.happy;
+            case SAD:
+                return this.sad;
             case EVEN:
                 return number % 2 == 0;
             case ODD:
@@ -281,6 +332,8 @@ public class ANumber {
                         "\tsquare: %s\n" +
                         "\tsunny: %s\n" +
                         "\tjumping: %s\n" +
+                        "\thappy: %s\n" +
+                        "\tsad: %s\n" +
                         "\teven: %s\n" +
                         "\todd: %s\n",
                 number,
@@ -292,6 +345,8 @@ public class ANumber {
                 this.square,
                 this.sunny,
                 this.jumping,
+                this.happy,
+                this.sad,
                 even, !even);
     }
 
@@ -375,7 +430,23 @@ public class ANumber {
             }
             s += "jumping";
             firstProperty = false;
-        }        
+        }
+        
+        if (happy) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "happy";
+            firstProperty = false;
+        }
+
+        if (sad) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "sad";
+            firstProperty = false;
+        }
 
         return s;
     }
