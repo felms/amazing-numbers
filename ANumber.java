@@ -177,10 +177,25 @@ public class ANumber {
 
     public static boolean mutuallyExclusiveProperties(String property1, String property2){
 
+        if (property1.equalsIgnoreCase("-" + property2)
+                || property2.equalsIgnoreCase("-" + property1)) {
+            return true;
+        }
+
+        /*property1 = property1.startsWith("-") ? property1.replaceFirst("-", "") : property1;
+        property2 = property2.startsWith("-") ? property2.replaceFirst("-", "") : property2;*/
+
         if ((property1.equalsIgnoreCase("even")
                 && property2.equalsIgnoreCase("odd")) ||
                 (property1.equalsIgnoreCase("odd")
                         && property2.equalsIgnoreCase("even"))) {
+            return true;
+        }
+
+        if ((property1.equalsIgnoreCase("-even")
+                && property2.equalsIgnoreCase("-odd")) ||
+                (property1.equalsIgnoreCase("-odd")
+                        && property2.equalsIgnoreCase("-even"))) {
             return true;
         }
 
@@ -198,12 +213,20 @@ public class ANumber {
             return true;
         }
 
+        if ((property1.equalsIgnoreCase("sad")
+                && property2.equalsIgnoreCase("happy")) ||
+                (property1.equalsIgnoreCase("happy")
+                        && property2.equalsIgnoreCase("sad"))) {
+            return true;
+        }
+
         return false;
     }
 
     public static boolean isAvailableProperty(String propertyName) {
 
         propertyName = propertyName.toUpperCase();
+        propertyName = propertyName.startsWith("-") ? propertyName.replaceFirst("-", "") : propertyName;
         for (AvailableProperties p : AvailableProperties.values()) {
             if (p.name().equals(propertyName)) {
                 return true;
@@ -215,6 +238,7 @@ public class ANumber {
 
     public boolean hasProperty(String property) {
 
+        property = property.startsWith("-") ? property.replaceFirst("-", "") : property;
         AvailableProperties aProperty = AvailableProperties.valueOf(property.toUpperCase());
 
         switch(aProperty) {
@@ -275,7 +299,24 @@ public class ANumber {
         String s = this.number + " is ";
         boolean firstProperty = true;
 
+        if (even) {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "even";
+            firstProperty = false;
+        } else {
+            if (!firstProperty) {
+                s += ", ";
+            }
+            s += "odd";
+            firstProperty = false;
+        }
+        
         if (buzz) {
+            if (!firstProperty) {
+                s += ", ";
+            }
             s += "buzz";
             firstProperty = false;
         }
@@ -334,21 +375,7 @@ public class ANumber {
             }
             s += "jumping";
             firstProperty = false;
-        }
-
-        if (even) {
-            if (!firstProperty) {
-                s += ", ";
-            }
-            s += "even";
-            firstProperty = false;
-        } else {
-            if (!firstProperty) {
-                s += ", ";
-            }
-            s += "odd";
-            firstProperty = false;
-        }
+        }        
 
         return s;
     }

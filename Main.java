@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 class Main {
@@ -172,19 +171,26 @@ class Main {
             if (properties.length > 1) {
                 boolean foundNumber = true;
                 for (int i = 0; i < properties.length; i++) {
-                    foundNumber = foundNumber && aNumber.hasProperty(properties[i]);
+                    if ((properties[i].startsWith("-") && !aNumber.hasProperty(properties[i]))
+                        || (!properties[0].startsWith("-") && aNumber.hasProperty(properties[0]))) {
+                        foundNumber = foundNumber && true;
+                    } else {
+                        foundNumber = foundNumber && false;
+                    }
                 }
                 if (foundNumber) {
                     found.add(aNumber);
                     count++;
                 }
             } else if (properties.length == 1) {
-                if (aNumber.hasProperty(properties[0])) {
+                if (properties[0].startsWith("-") && !aNumber.hasProperty(properties[0])) {
+                    found.add(aNumber);
+                    count++;
+                } else if (!properties[0].startsWith("-") && aNumber.hasProperty(properties[0])) {
                     found.add(aNumber);
                     count++;
                 }
             }
-
             number++;
         }
 
@@ -201,6 +207,7 @@ class Main {
                 "  * the first parameter represents a starting number;\n" +
                 "  * the second parameter shows how many consecutive numbers are to be printed;\n" +
                 "- two natural numbers and properties to search for;\n" +
+                "- a property preceded by minus must not be present in numbers;\n" +
                 "- separate the parameters with one space;\n" +
                 "- enter 0 to exit.");
 
